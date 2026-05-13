@@ -49,13 +49,28 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="../demo1/index.html">
-                                    <span class="sub-item">Projek</span>
+                                <a href="{{ route('barang.index') }}">
+                                    <span class="sub-item">Barang</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="../demo1/index.html">
-                                    <span class="sub-item">Karyawan</span>
+                                <a href="{{ route('personel.index') }}">
+                                    <span class="sub-item">Personel</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('posisi.index') }}">
+                                    <span class="sub-item">Posisi</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('posisippe.index') }}">
+                                    <span class="sub-item">Posisi PPE</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('gudang.index') }}">
+                                    <span class="sub-item">Gudang</span>
                                 </a>
                             </li>
                         </ul>
