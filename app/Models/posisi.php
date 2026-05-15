@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class posisi extends Model
 {
@@ -21,5 +22,10 @@ class posisi extends Model
     public function getRouteKeyName(): string
     {
         return 'idposisi';
+    }
+
+    public function items(): HasMany
+    {
+        return $this->hasMany(posisippe::class, 'idposisi', 'idposisi');
     }
 }

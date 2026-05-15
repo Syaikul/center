@@ -64,11 +64,6 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ route('posisippe.index') }}">
-                                    <span class="sub-item">Posisi PPE</span>
-                                </a>
-                            </li>
-                            <li>
                                 <a href="{{ route('gudang.index') }}">
                                     <span class="sub-item">Gudang</span>
                                 </a>
