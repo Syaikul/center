@@ -17,7 +17,7 @@
     @include('partials.alert')
 
     <div class="row g-4">
-        <div class="col-lg-{{ $selectedPosisi ? '5' : '12' }}">
+        <div class="col-lg-{{ $selectedPosisi ? '7' : '12' }}">
             <div class="card">
                 <div class="card-header">
                     <div class="card-title mb-0">Daftar posisi</div>
@@ -66,7 +66,7 @@
         </div>
 
         @if ($selectedPosisi)
-            <div class="col-lg-7">
+            <div class="col-lg-5">
                 <div class="card detail-panel">
                     <div class="card-header d-flex align-items-center flex-wrap gap-2">
                         <div class="card-title mb-0">

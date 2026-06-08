@@ -47,6 +47,7 @@ class BarangController extends Controller
             'namabarang' => ['required', 'string', 'max:191', 'unique:barang,namabarang'],
             'idkategori' => ['required', 'integer', 'exists:kategori,idkategori'],
             'idsatuan' => ['required', 'integer', 'exists:satuan,idsatuan'],
+            'detail_tambahan' => ['nullable', 'string', 'max:5000'],
         ]);
 
         barang::query()->create($validated);
@@ -71,6 +72,7 @@ class BarangController extends Controller
             ],
             'idkategori' => ['required', 'integer', 'exists:kategori,idkategori'],
             'idsatuan' => ['required', 'integer', 'exists:satuan,idsatuan'],
+            'detail_tambahan' => ['nullable', 'string', 'max:5000'],
         ]);
 
         $barang->update($validated);

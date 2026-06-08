@@ -21,6 +21,7 @@ class barang extends Model
         'namabarang',
         'idkategori',
         'idsatuan',
+        'detail_tambahan',
     ];
 
     public function getRouteKeyName(): string

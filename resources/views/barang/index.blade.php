@@ -17,7 +17,7 @@
     @include('partials.alert')
 
     <div class="row g-4">
-        <div class="col-lg-{{ $selectedBarang ? '5' : '12' }}">
+        <div class="col-lg-{{ $selectedBarang ? '7' : '12' }}">
             <div class="card">
                 <div class="card-header">
                     <div class="card-title mb-0">Daftar barang</div>
@@ -29,6 +29,7 @@
                                 <tr>
                                     <th>Nama</th>
                                     <th>Kategori</th>
+                                    <th>Detail tambahan</th>
                                     <th class="text-center">Jumlah varian</th>
                                     <th class="text-end" style="width: 100px">Aksi</th>
                                 </tr>
@@ -39,6 +40,13 @@
                                         data-href="{{ route('barang.index', ['barang' => $row->idbarang]) }}">
                                         <td>{{ $row->namabarang }}</td>
                                         <td>{{ $row->kategori?->nama_kategori ?? '-' }}</td>
+                                        <td class="text-muted small">
+                                            @if ($row->detail_tambahan)
+                                                {{ Str::limit($row->detail_tambahan, 60) }}
+                                            @else
+                                                <span class="text-muted">—</span>
+                                            @endif
+                                        </td>
                                         <td class="text-center">
                                             <span class="badge badge-primary">{{ $row->varian_count }}</span>
                                         </td>
@@ -46,6 +54,7 @@
                                             <button type="button" class="btn btn-sm btn-warning btn-edit-barang"
                                                 data-id="{{ $row->idbarang }}" data-kode="{{ $row->kodebarang }}"
                                                 data-nama="{{ $row->namabarang }}"
+                                                data-detail="{{ e($row->detail_tambahan ?? '') }}"
                                                 data-idkategori="{{ $row->idkategori }}"
                                                 data-idsatuan="{{ $row->idsatuan }}" data-bs-toggle="modal"
                                                 data-bs-target="#modalBarang" title="Ubah">
@@ -72,9 +81,13 @@
         </div>
 
         @if ($selectedBarang)
-            <div class="col-lg-7">
+            <div class="col-lg-5">
                 <div class="card detail-panel">
                     <div class="card-header d-flex align-items-center flex-wrap gap-2">
+                        <a href="{{ route('barang.index') }}" class="btn btn-sm btn-outline-secondary"
+                            title="Kembali ke daftar barang">
+                            <i class="fas fa-arrow-left me-1"></i> Kembali
+                        </a>
                         <div class="card-title mb-0">
                             Varian: <strong>{{ $selectedBarang->namabarang }}</strong>
                             <small class="text-muted">({{ $selectedBarang->kodebarang }})</small>
@@ -169,6 +182,11 @@
                                 @endforeach
                             </select>
                         </div>
+                        <div class="form-group">
+                            <label for="detail_tambahan">Detail tambahan <span class="text-muted fw-normal">(opsional)</span></label>
+                            <textarea class="form-control" id="detail_tambahan" name="detail_tambahan" rows="3"
+                                placeholder="Catatan tambahan tentang barang"></textarea>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -236,6 +254,7 @@
                     formBarang.action = @json(route('barang.store'));
                     methodField.innerHTML = '';
                     ['kodebarang', 'namabarang'].forEach(id => document.getElementById(id).value = '');
+                    document.getElementById('detail_tambahan').value = '';
                     document.getElementById('idkategori').value = '';
                     document.getElementById('idsatuan').value = '';
                     title.textContent = 'Tambah barang';
@@ -246,6 +265,7 @@
                         methodField.innerHTML = '<input type="hidden" name="_method" value="PUT">';
                         document.getElementById('kodebarang').value = this.dataset.kode;
                         document.getElementById('namabarang').value = this.dataset.nama;
+                        document.getElementById('detail_tambahan').value = this.dataset.detail || '';
                         document.getElementById('idkategori').value = this.dataset.idkategori;
                         document.getElementById('idsatuan').value = this.dataset.idsatuan;
                         title.textContent = 'Ubah barang';
@@ -292,7 +312,7 @@
                 paging: true,
                 searching: true,
                 order: [[0, 'asc']],
-                columnDefs: [{ orderable: false, targets: 3 }]
+                columnDefs: [{ orderable: false, targets: 4 }]
             });
         })();
     </script>
