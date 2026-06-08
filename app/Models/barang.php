@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class barang extends Model
 {
@@ -39,8 +40,20 @@ class barang extends Model
         return $this->belongsTo(satuan::class, 'idsatuan', 'idsatuan');
     }
 
-    public function varian(): HasMany
+    public function subBarang(): HasMany
     {
-        return $this->hasMany(barang_varian::class, 'idbarang', 'idbarang');
+        return $this->hasMany(barang_sub::class, 'idbarang', 'idbarang');
+    }
+
+    public function varian(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            barang_varian::class,
+            barang_sub::class,
+            'idbarang',
+            'idsubbarang',
+            'idbarang',
+            'idsubbarang'
+        );
     }
 }

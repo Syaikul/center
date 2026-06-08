@@ -77,13 +77,13 @@
                     </div>
                     <div class="card-body">
                         @if ($items->isEmpty())
-                            <p class="text-muted mb-0">Belum ada barang terkait untuk posisi ini.</p>
+                            <p class="text-muted mb-0">Belum ada sub barang terkait untuk posisi ini.</p>
                         @else
                             <div class="table-responsive">
                                 <table class="table table-striped table-hover mb-0">
                                     <thead>
                                         <tr>
-                                            <th>Barang</th>
+                                            <th>Sub barang</th>
                                             <th class="text-center">Qty</th>
                                             <th class="text-end">Aksi</th>
                                         </tr>
@@ -91,12 +91,18 @@
                                     <tbody>
                                         @foreach ($items as $item)
                                             <tr>
-                                                <td>{{ $item->barang?->namabarang }}</td>
+                                                <td>
+                                                    {{ $item->subBarang?->nama_tampilan }}
+                                                    <small class="text-muted d-block">
+                                                        <code>{{ $item->subBarang?->kode_lengkap }}</code>
+                                                        — {{ $item->subBarang?->barang?->namabarang }}
+                                                    </small>
+                                                </td>
                                                 <td class="text-center">{{ $item->qty }}</td>
                                                 <td class="text-end">
                                                     <button type="button" class="btn btn-sm btn-warning btn-edit-item"
                                                         data-id="{{ $item->idposppe }}"
-                                                        data-idbarang="{{ $item->idbarang }}"
+                                                        data-idsubbarang="{{ $item->idsubbarang }}"
                                                         data-qty="{{ $item->qty }}" data-bs-toggle="modal"
                                                         data-bs-target="#modalItem">
                                                         <i class="fas fa-pen"></i>
@@ -163,11 +169,13 @@
                         </div>
                         <div class="modal-body">
                             <div class="form-group">
-                                <label for="idbarang">Barang</label>
-                                <select class="form-select" id="idbarang" name="idbarang" required>
-                                    <option value="">- pilih barang -</option>
-                                    @foreach ($barangs as $barang)
-                                        <option value="{{ $barang->idbarang }}">{{ $barang->namabarang }}</option>
+                                <label for="idsubbarang">Sub barang</label>
+                                <select class="form-select" id="idsubbarang" name="idsubbarang" required>
+                                    <option value="">- pilih sub barang -</option>
+                                    @foreach ($subBarangs as $sub)
+                                        <option value="{{ $sub->idsubbarang }}">
+                                            {{ $sub->nama_tampilan }} ({{ $sub->kode_lengkap }}) — {{ $sub->barang?->namabarang }}
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>
@@ -221,7 +229,7 @@
             @if ($selectedPosisi)
                 const formItem = document.getElementById('formItem');
                 const itemMethod = document.getElementById('itemMethodField');
-                const idbarang = document.getElementById('idbarang');
+                const idsubbarang = document.getElementById('idsubbarang');
                 const qty = document.getElementById('qty');
                 const itemTitle = document.getElementById('modalItemLabel');
                 const storeItemUrl = @json(route('posisi.item.store', $selectedPosisi));
@@ -229,7 +237,7 @@
                 document.getElementById('btnTambahItem').addEventListener('click', function() {
                     formItem.action = storeItemUrl;
                     itemMethod.innerHTML = '';
-                    idbarang.value = '';
+                    idsubbarang.value = '';
                     qty.value = '';
                     itemTitle.textContent = 'Tambah item — {{ $selectedPosisi->namaposisi }}';
                 });
@@ -238,7 +246,7 @@
                     btn.addEventListener('click', function() {
                         formItem.action = @json(url('posisi/'.$selectedPosisi->idposisi.'/item')) + '/' + this.dataset.id;
                         itemMethod.innerHTML = '<input type="hidden" name="_method" value="PUT">';
-                        idbarang.value = this.dataset.idbarang;
+                        idsubbarang.value = this.dataset.idsubbarang;
                         qty.value = this.dataset.qty;
                         itemTitle.textContent = 'Ubah item';
                     });

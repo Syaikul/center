@@ -17,7 +17,7 @@ class posisippe extends Model
 
     protected $fillable = [
         'idposisi',
-        'idbarang',
+        'idsubbarang',
         'qty',
     ];
 
@@ -31,8 +31,8 @@ class posisippe extends Model
         return $this->belongsTo(posisi::class, 'idposisi', 'idposisi');
     }
 
-    public function barang(): BelongsTo
+    public function subBarang(): BelongsTo
     {
-        return $this->belongsTo(barang::class, 'idbarang', 'idbarang');
+        return $this->belongsTo(barang_sub::class, 'idsubbarang', 'idsubbarang');
     }
 }

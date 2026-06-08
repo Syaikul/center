@@ -20,9 +20,12 @@ Route::middleware('auth')->group(function () {
     Route::resource('kategori', KategoriController::class)->only(['index', 'store', 'update', 'destroy']);
     Route::resource('satuan', SatuanController::class)->only(['index', 'store', 'update', 'destroy']);
     Route::resource('barang', BarangController::class)->only(['index', 'store', 'update', 'destroy']);
-    Route::post('barang/{barang}/varian', [BarangController::class, 'storeVarian'])->name('barang.varian.store');
-    Route::put('barang/{barang}/varian/{barang_varian}', [BarangController::class, 'updateVarian'])->name('barang.varian.update');
-    Route::delete('barang/{barang}/varian/{barang_varian}', [BarangController::class, 'destroyVarian'])->name('barang.varian.destroy');
+    Route::post('barang/{barang}/sub-barang', [BarangController::class, 'storeSubBarang'])->name('barang.sub.store');
+    Route::put('barang/{barang}/sub-barang/{barang_sub}', [BarangController::class, 'updateSubBarang'])->name('barang.sub.update');
+    Route::delete('barang/{barang}/sub-barang/{barang_sub}', [BarangController::class, 'destroySubBarang'])->name('barang.sub.destroy');
+    Route::post('barang/{barang}/sub-barang/{barang_sub}/varian', [BarangController::class, 'storeVarian'])->name('barang.varian.store');
+    Route::put('barang/{barang}/sub-barang/{barang_sub}/varian/{barang_varian}', [BarangController::class, 'updateVarian'])->name('barang.varian.update');
+    Route::delete('barang/{barang}/sub-barang/{barang_sub}/varian/{barang_varian}', [BarangController::class, 'destroyVarian'])->name('barang.varian.destroy');
 
     Route::resource('personel', PersonelController::class)->only(['index', 'store', 'update', 'destroy']);
     Route::resource('posisi', PosisiController::class)->only(['index', 'store', 'update', 'destroy']);

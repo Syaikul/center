@@ -37,8 +37,15 @@ class BarangApiController extends Controller
     public function withVarian(): JsonResponse
     {
         $data = barang::query()
-            ->with(['kategori', 'satuan', 'varian'])
-            ->withCount('varian')
+            ->with([
+                'kategori',
+                'satuan',
+                'subBarang' => fn ($query) => $query->with([
+                    'barang',
+                    'varian.subBarang.barang',
+                ]),
+            ])
+            ->withCount(['subBarang', 'varian'])
             ->orderBy('namabarang')
             ->get();
 

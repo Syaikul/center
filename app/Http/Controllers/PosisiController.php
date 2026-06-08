@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\barang;
+use App\Models\barang_sub;
 use App\Models\posisi;
 use App\Models\posisippe;
 use Illuminate\Http\RedirectResponse;
@@ -19,7 +19,10 @@ class PosisiController extends Controller
             ->orderBy('namaposisi')
             ->get();
 
-        $barangs = barang::query()->orderBy('namabarang')->get();
+        $subBarangs = barang_sub::query()
+            ->with('barang')
+            ->orderBy('namasubbarang')
+            ->get();
 
         $selectedPosisi = null;
         $items = collect();
@@ -29,13 +32,13 @@ class PosisiController extends Controller
 
             if ($selectedPosisi) {
                 $items = $selectedPosisi->items()
-                    ->with('barang')
+                    ->with('subBarang.barang')
                     ->orderBy('idposppe')
                     ->get();
             }
         }
 
-        return view('posisi.index', compact('posisis', 'barangs', 'selectedPosisi', 'items'));
+        return view('posisi.index', compact('posisis', 'subBarangs', 'selectedPosisi', 'items'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -77,21 +80,21 @@ class PosisiController extends Controller
     public function storeItem(Request $request, posisi $posisi): RedirectResponse
     {
         $validated = $request->validate([
-            'idbarang' => ['required', 'integer', 'exists:barang,idbarang'],
+            'idsubbarang' => ['required', 'integer', 'exists:barang_sub,idsubbarang'],
             'qty' => ['required', 'integer', 'min:1'],
         ]);
 
         $request->validate([
-            'idbarang' => [
-                Rule::unique('posisippe', 'idbarang')
+            'idsubbarang' => [
+                Rule::unique('posisippe', 'idsubbarang')
                     ->where(fn ($query) => $query->where('idposisi', $posisi->idposisi)),
             ],
         ], [
-            'idbarang.unique' => 'Barang ini sudah terdaftar pada posisi ini.',
+            'idsubbarang.unique' => 'Sub barang ini sudah terdaftar pada posisi ini.',
         ]);
 
         $posisi->items()->create([
-            'idbarang' => $validated['idbarang'],
+            'idsubbarang' => $validated['idsubbarang'],
             'qty' => $validated['qty'],
         ]);
 
@@ -105,18 +108,18 @@ class PosisiController extends Controller
         abort_unless($posisippe->idposisi === $posisi->idposisi, 404);
 
         $validated = $request->validate([
-            'idbarang' => ['required', 'integer', 'exists:barang,idbarang'],
+            'idsubbarang' => ['required', 'integer', 'exists:barang_sub,idsubbarang'],
             'qty' => ['required', 'integer', 'min:1'],
         ]);
 
         $request->validate([
-            'idbarang' => [
-                Rule::unique('posisippe', 'idbarang')
+            'idsubbarang' => [
+                Rule::unique('posisippe', 'idsubbarang')
                     ->where(fn ($query) => $query->where('idposisi', $posisi->idposisi))
                     ->ignore($posisippe->idposppe, 'idposppe'),
             ],
         ], [
-            'idbarang.unique' => 'Barang ini sudah terdaftar pada posisi ini.',
+            'idsubbarang.unique' => 'Sub barang ini sudah terdaftar pada posisi ini.',
         ]);
 
         $posisippe->update($validated);
