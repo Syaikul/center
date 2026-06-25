@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\TipeController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\GudangController;
 use App\Http\Controllers\PersonelController;
@@ -17,7 +17,8 @@ Auth::routes();
 
 Route::middleware('auth')->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
-    Route::resource('kategori', KategoriController::class)->only(['index', 'store', 'update', 'destroy']);
+    Route::resource('tipe', TipeController::class)->only(['index', 'store', 'update', 'destroy']);
+    Route::redirect('/kategori', '/tipe');
     Route::resource('satuan', SatuanController::class)->only(['index', 'store', 'update', 'destroy']);
     Route::resource('barang', BarangController::class)->only(['index', 'store', 'update', 'destroy']);
     Route::post('barang/{barang}/sub-barang', [BarangController::class, 'storeSubBarang'])->name('barang.sub.store');

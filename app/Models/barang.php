@@ -20,7 +20,7 @@ class barang extends Model
     protected $fillable = [
         'kodebarang',
         'namabarang',
-        'idkategori',
+        'idtipe',
         'idsatuan',
         'detail_tambahan',
     ];
@@ -30,9 +30,9 @@ class barang extends Model
         return 'idbarang';
     }
 
-    public function kategori(): BelongsTo
+    public function tipe(): BelongsTo
     {
-        return $this->belongsTo(kategori::class, 'idkategori', 'idkategori');
+        return $this->belongsTo(tipe::class, 'idtipe', 'idtipe');
     }
 
     public function satuan(): BelongsTo

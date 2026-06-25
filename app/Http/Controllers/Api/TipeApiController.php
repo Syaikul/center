@@ -3,15 +3,15 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\kategori;
+use App\Models\tipe;
 use Illuminate\Http\JsonResponse;
 
-class KategoriApiController extends Controller
+class TipeApiController extends Controller
 {
     public function index(): JsonResponse
     {
-        $data = kategori::query()
-            ->orderBy('nama_kategori')
+        $data = tipe::query()
+            ->orderBy('nama_tipe')
             ->get();
 
         return response()->json([

@@ -12,14 +12,14 @@ class BarangApiController extends Controller
     public function index(Request $request): JsonResponse
     {
         $query = barang::query()
-            ->with(['kategori', 'satuan'])
+            ->with(['tipe', 'satuan'])
             ->orderBy('namabarang');
 
-        if ($request->filled('kategori')) {
-            $namaKategori = $request->string('kategori')->trim();
+        if ($request->filled('tipe')) {
+            $namaTipe = $request->string('tipe')->trim();
 
-            $query->whereHas('kategori', function ($q) use ($namaKategori) {
-                $q->where('nama_kategori', $namaKategori);
+            $query->whereHas('tipe', function ($q) use ($namaTipe) {
+                $q->where('nama_tipe', $namaTipe);
             });
         }
 
@@ -28,7 +28,7 @@ class BarangApiController extends Controller
         return response()->json([
             'data' => $data,
             'meta' => [
-                'kategori' => $request->input('kategori'),
+                'tipe' => $request->input('tipe'),
                 'count' => $data->count(),
             ],
         ]);
@@ -38,11 +38,11 @@ class BarangApiController extends Controller
     {
         $data = barang::query()
             ->with([
-                'kategori',
+                'tipe',
                 'satuan',
                 'subBarang' => fn ($query) => $query->with([
                     'barang',
-                    'varian.subBarang.barang',
+                    'varian' => fn ($q) => $q->nonDefault(),
                 ]),
             ])
             ->withCount(['subBarang', 'varian'])

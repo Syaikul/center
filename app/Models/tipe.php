@@ -4,22 +4,22 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class kategori extends Model
+class tipe extends Model
 {
-    protected $table = 'kategori';
+    protected $table = 'tipe';
 
-    protected $primaryKey = 'idkategori';
+    protected $primaryKey = 'idtipe';
 
     public $incrementing = true;
 
     protected $keyType = 'int';
 
     protected $fillable = [
-        'nama_kategori',
+        'nama_tipe',
     ];
 
     public function getRouteKeyName(): string
     {
-        return 'idkategori';
+        return 'idtipe';
     }
 }

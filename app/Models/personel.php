@@ -15,6 +15,7 @@ class personel extends Model
     protected $keyType = 'int';
 
     protected $fillable = [
+        'nik',
         'namapersonel',
     ];
 

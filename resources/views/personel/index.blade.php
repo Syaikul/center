@@ -15,15 +15,23 @@
         <div class="card-body">
             <div class="table-responsive">
                 <table id="dtPersonel" class="display table table-striped table-hover">
-                    <thead><tr><th>ID personel</th><th>Nama personel</th><th class="text-end">Aksi</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th>NIK</th>
+                            <th>Nama personel</th>
+                            <th class="text-end">Aksi</th>
+                        </tr>
+                    </thead>
                     <tbody>
                         @foreach ($personels as $row)
                             <tr>
-                                <td>{{ $row->idpersonel }}</td>
+                                <td><code>{{ $row->nik }}</code></td>
                                 <td>{{ $row->namapersonel }}</td>
                                 <td class="text-end">
                                     <button type="button" class="btn btn-sm btn-warning btn-edit-personel"
-                                        data-id="{{ $row->idpersonel }}" data-nama="{{ $row->namapersonel }}"
+                                        data-id="{{ $row->idpersonel }}"
+                                        data-nik="{{ $row->nik }}"
+                                        data-nama="{{ $row->namapersonel }}"
                                         data-bs-toggle="modal" data-bs-target="#modalPersonel">Ubah</button>
                                     <form action="{{ route('personel.destroy', $row) }}" method="post" class="d-inline" onsubmit="return confirm('Hapus personel ini?');">
                                         @csrf @method('DELETE')
@@ -46,6 +54,10 @@
                 <div class="modal-header"><h5 class="modal-title" id="modalPersonelLabel">Tambah personel</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
                 <div class="modal-body">
                     <div class="form-group">
+                        <label for="nik">NIK <span class="text-muted fw-normal">(Nomor Id Karyawan)</span></label>
+                        <input type="text" class="form-control" id="nik" name="nik" required>
+                    </div>
+                    <div class="form-group">
                         <label for="namapersonel">Nama personel</label>
                         <input type="text" class="form-control" id="namapersonel" name="namapersonel" required>
                     </div>
@@ -61,22 +73,28 @@
         (function() {
             const form = document.getElementById('formPersonel');
             const methodField = document.getElementById('personelMethodField');
+            const nik = document.getElementById('nik');
             const nama = document.getElementById('namapersonel');
             const title = document.getElementById('modalPersonelLabel');
+
             document.getElementById('btnTambahPersonel').addEventListener('click', function() {
                 form.action = @json(route('personel.store'));
                 methodField.innerHTML = '';
+                nik.value = '';
                 nama.value = '';
                 title.textContent = 'Tambah personel';
             });
+
             document.querySelectorAll('.btn-edit-personel').forEach(function(btn) {
                 btn.addEventListener('click', function() {
                     form.action = @json(url('personel')) + '/' + this.dataset.id;
                     methodField.innerHTML = '<input type="hidden" name="_method" value="PUT">';
+                    nik.value = this.dataset.nik;
                     nama.value = this.dataset.nama;
                     title.textContent = 'Ubah personel';
                 });
             });
+
             $('#dtPersonel').DataTable();
         })();
     </script>

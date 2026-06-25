@@ -3,8 +3,8 @@
 @section('content')
     <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
         <div class="ms-md-auto py-2 py-md-0">
-            <button type="button" class="btn btn-primary btn-round" data-bs-toggle="modal" data-bs-target="#modalKategori"
-                id="btnTambahKategori">Tambah kategori</button>
+            <button type="button" class="btn btn-primary btn-round" data-bs-toggle="modal" data-bs-target="#modalTipe"
+                id="btnTambahTipe">Tambah tipe</button>
         </div>
     </div>
 
@@ -28,29 +28,29 @@
 
     <div class="card">
         <div class="card-header">
-            <div class="card-title">Master kategori</div>
+            <div class="card-title">Master tipe</div>
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table id="dtKategori" class="display table table-striped table-hover">
+                <table id="dtTipe" class="display table table-striped table-hover">
                     <thead>
                         <tr>
-                            <th>ID kategori</th>
-                            <th>Nama kategori</th>
+                            <th>ID tipe</th>
+                            <th>Nama tipe</th>
                             <th class="text-end" style="width: 160px">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($kategoris as $row)
+                        @foreach ($tipes as $row)
                             <tr>
-                                <td>{{ $row->idkategori }}</td>
-                                <td>{{ $row->nama_kategori }}</td>
+                                <td>{{ $row->idtipe }}</td>
+                                <td>{{ $row->nama_tipe }}</td>
                                 <td class="text-end">
-                                    <button type="button" class="btn btn-sm btn-warning btn-edit-kategori"
-                                        data-id="{{ $row->idkategori }}" data-nama="{{ $row->nama_kategori }}"
-                                        data-bs-toggle="modal" data-bs-target="#modalKategori">Ubah</button>
-                                    <form action="{{ route('kategori.destroy', $row) }}" method="post" class="d-inline"
-                                        onsubmit="return confirm('Hapus kategori ini?');">
+                                    <button type="button" class="btn btn-sm btn-warning btn-edit-tipe"
+                                        data-id="{{ $row->idtipe }}" data-nama="{{ $row->nama_tipe }}"
+                                        data-bs-toggle="modal" data-bs-target="#modalTipe">Ubah</button>
+                                    <form action="{{ route('tipe.destroy', $row) }}" method="post" class="d-inline"
+                                        onsubmit="return confirm('Hapus tipe ini?');">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
@@ -64,21 +64,21 @@
         </div>
     </div>
 
-    <div class="modal fade" id="modalKategori" tabindex="-1" aria-labelledby="modalKategoriLabel" aria-hidden="true">
+    <div class="modal fade" id="modalTipe" tabindex="-1" aria-labelledby="modalTipeLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form id="formKategori" method="post" action="{{ route('kategori.store') }}">
+                <form id="formTipe" method="post" action="{{ route('tipe.store') }}">
                     @csrf
-                    <div id="kategoriMethodField"></div>
+                    <div id="tipeMethodField"></div>
                     <div class="modal-header">
-                        <h5 class="modal-title" id="modalKategoriLabel">Kategori</h5>
+                        <h5 class="modal-title" id="modalTipeLabel">Tipe</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <label for="nama_kategori">Nama kategori</label>
-                            <input type="text" class="form-control" id="nama_kategori" name="nama_kategori"
-                                value="{{ old('nama_kategori') }}" required maxlength="191">
+                            <label for="nama_tipe">Nama tipe</label>
+                            <input type="text" class="form-control" id="nama_tipe" name="nama_tipe"
+                                value="{{ old('nama_tipe') }}" required maxlength="191">
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -94,32 +94,32 @@
 @push('scripts')
     <script>
         (function() {
-            const modalEl = document.getElementById('modalKategori');
-            const form = document.getElementById('formKategori');
-            const methodContainer = document.getElementById('kategoriMethodField');
-            const namaInput = document.getElementById('nama_kategori');
-            const modalTitle = document.getElementById('modalKategoriLabel');
+            const modalEl = document.getElementById('modalTipe');
+            const form = document.getElementById('formTipe');
+            const methodContainer = document.getElementById('tipeMethodField');
+            const namaInput = document.getElementById('nama_tipe');
+            const modalTitle = document.getElementById('modalTipeLabel');
 
             function resetFormCreate() {
-                form.action = @json(route('kategori.store'));
+                form.action = @json(route('tipe.store'));
                 methodContainer.innerHTML = '';
                 namaInput.value = '';
-                modalTitle.textContent = 'Tambah kategori';
+                modalTitle.textContent = 'Tambah tipe';
             }
 
-            document.getElementById('btnTambahKategori').addEventListener('click', function() {
+            document.getElementById('btnTambahTipe').addEventListener('click', function() {
                 resetFormCreate();
             });
 
-            document.querySelectorAll('.btn-edit-kategori').forEach(function(btn) {
+            document.querySelectorAll('.btn-edit-tipe').forEach(function(btn) {
                 btn.addEventListener('click', function() {
                     const id = this.getAttribute('data-id');
                     const nama = this.getAttribute('data-nama');
-                    form.action = @json(url('kategori')) + '/' + id;
+                    form.action = @json(url('tipe')) + '/' + id;
                     methodContainer.innerHTML =
                         '<input type="hidden" name="_method" value="PUT" autocomplete="off">';
                     namaInput.value = nama;
-                    modalTitle.textContent = 'Ubah kategori';
+                    modalTitle.textContent = 'Ubah tipe';
                 });
             });
 
@@ -128,7 +128,7 @@
             });
 
             $(document).ready(function() {
-                $('#dtKategori').DataTable({
+                $('#dtTipe').DataTable({
                     pageLength: 10,
                     order: [
                         [1, 'asc']

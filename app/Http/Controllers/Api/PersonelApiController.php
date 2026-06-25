@@ -24,6 +24,7 @@ class PersonelApiController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
+            'nik' => ['required', 'string', 'max:50', 'unique:personel,nik'],
             'namapersonel' => ['required', 'string', 'max:191', 'unique:personel,namapersonel'],
         ]);
 
@@ -45,6 +46,12 @@ class PersonelApiController extends Controller
     public function update(Request $request, personel $personel): JsonResponse
     {
         $validated = $request->validate([
+            'nik' => [
+                'required',
+                'string',
+                'max:50',
+                Rule::unique('personel', 'nik')->ignore($personel->idpersonel, 'idpersonel'),
+            ],
             'namapersonel' => [
                 'required',
                 'string',

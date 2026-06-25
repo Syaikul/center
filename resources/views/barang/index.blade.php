@@ -93,7 +93,7 @@
                             <tr>
                                 <th>Kode</th>
                                 <th>Nama</th>
-                                <th>Kategori</th>
+                                <th>Tipe</th>
                                 <th>Detail tambahan</th>
                                 <th class="text-center">Sub barang</th>
                                 <th class="text-end" style="width: 100px">Aksi</th>
@@ -105,7 +105,7 @@
                                     data-href="{{ route('barang.index', ['barang' => $row->idbarang]) }}">
                                     <td><code>{{ $row->kodebarang }}</code></td>
                                     <td>{{ $row->namabarang }}</td>
-                                    <td>{{ $row->kategori?->nama_kategori ?? '-' }}</td>
+                                    <td>{{ $row->tipe?->nama_tipe ?? '-' }}</td>
                                     <td class="text-muted small">
                                         @if ($row->detail_tambahan)
                                             {{ Str::limit($row->detail_tambahan, 50) }}
@@ -121,7 +121,7 @@
                                             data-id="{{ $row->idbarang }}" data-kode="{{ $row->kodebarang }}"
                                             data-nama="{{ $row->namabarang }}"
                                             data-detail="{{ e($row->detail_tambahan ?? '') }}"
-                                            data-idkategori="{{ $row->idkategori }}"
+                                            data-idtipe="{{ $row->idtipe }}"
                                             data-idsatuan="{{ $row->idsatuan }}" data-bs-toggle="modal"
                                             data-bs-target="#modalBarang" title="Ubah">
                                             <i class="fas fa-pen"></i>
@@ -276,11 +276,11 @@
                             <input type="text" class="form-control" id="namabarang" name="namabarang" required>
                         </div>
                         <div class="form-group">
-                            <label for="idkategori">Kategori</label>
-                            <select class="form-select" id="idkategori" name="idkategori" required>
-                                <option value="">- pilih kategori -</option>
-                                @foreach ($kategoris as $kategori)
-                                    <option value="{{ $kategori->idkategori }}">{{ $kategori->nama_kategori }}</option>
+                            <label for="idtipe">Tipe</label>
+                            <select class="form-select" id="idtipe" name="idtipe" required>
+                                <option value="">- pilih tipe -</option>
+                                @foreach ($tipes as $tipe)
+                                    <option value="{{ $tipe->idtipe }}">{{ $tipe->nama_tipe }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -408,7 +408,7 @@
                         methodField.innerHTML = '';
                         ['kodebarang', 'namabarang'].forEach(id => document.getElementById(id).value = '');
                         document.getElementById('detail_tambahan').value = '';
-                        document.getElementById('idkategori').value = '';
+                        document.getElementById('idtipe').value = '';
                         document.getElementById('idsatuan').value = '';
                         title.textContent = 'Tambah barang';
                     });
@@ -420,7 +420,7 @@
                         document.getElementById('kodebarang').value = this.dataset.kode;
                         document.getElementById('namabarang').value = this.dataset.nama;
                         document.getElementById('detail_tambahan').value = this.dataset.detail || '';
-                        document.getElementById('idkategori').value = this.dataset.idkategori;
+                        document.getElementById('idtipe').value = this.dataset.idtipe;
                         document.getElementById('idsatuan').value = this.dataset.idsatuan;
                         title.textContent = 'Ubah barang';
                     });

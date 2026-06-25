@@ -14,7 +14,7 @@ class PosisippeApiController extends Controller
         $query = posisippe::query()
             ->with([
                 'posisi',
-                'subBarang.barang.kategori',
+                'subBarang.barang.tipe',
                 'subBarang.barang.satuan',
             ])
             ->orderBy('idposisi')

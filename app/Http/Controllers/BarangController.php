@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\barang;
 use App\Models\barang_sub;
 use App\Models\barang_varian;
-use App\Models\kategori;
+use App\Models\tipe;
 use App\Models\satuan;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -17,12 +17,12 @@ class BarangController extends Controller
     public function index(Request $request): View
     {
         $barangs = barang::query()
-            ->with('kategori')
+            ->with('tipe')
             ->withCount('subBarang')
             ->orderBy('namabarang')
             ->get();
 
-        $kategoris = kategori::query()->orderBy('nama_kategori')->get();
+        $tipes = tipe::query()->orderBy('nama_tipe')->get();
         $satuans = satuan::query()->orderBy('nama_satuan')->get();
 
         $selectedBarang = null;
@@ -33,7 +33,7 @@ class BarangController extends Controller
 
         if ($request->filled('barang')) {
             $selectedBarang = barang::query()
-                ->with('kategori')
+                ->with('tipe')
                 ->find($request->integer('barang'));
 
             if ($selectedBarang) {
@@ -60,7 +60,7 @@ class BarangController extends Controller
 
         return view('barang.index', compact(
             'barangs',
-            'kategoris',
+            'tipes',
             'satuans',
             'selectedBarang',
             'selectedSubBarang',
@@ -75,7 +75,7 @@ class BarangController extends Controller
         $validated = $request->validate([
             'kodebarang' => ['required', 'string', 'max:100', 'unique:barang,kodebarang'],
             'namabarang' => ['required', 'string', 'max:191', 'unique:barang,namabarang'],
-            'idkategori' => ['required', 'integer', 'exists:kategori,idkategori'],
+            'idtipe' => ['required', 'integer', 'exists:tipe,idtipe'],
             'idsatuan' => ['required', 'integer', 'exists:satuan,idsatuan'],
             'detail_tambahan' => ['nullable', 'string', 'max:5000'],
         ]);
@@ -100,7 +100,7 @@ class BarangController extends Controller
                 'max:191',
                 Rule::unique('barang', 'namabarang')->ignore($barang->idbarang, 'idbarang'),
             ],
-            'idkategori' => ['required', 'integer', 'exists:kategori,idkategori'],
+            'idtipe' => ['required', 'integer', 'exists:tipe,idtipe'],
             'idsatuan' => ['required', 'integer', 'exists:satuan,idsatuan'],
             'detail_tambahan' => ['nullable', 'string', 'max:5000'],
         ]);

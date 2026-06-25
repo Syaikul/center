@@ -39,8 +39,8 @@
                     <div class="collapse" id="dashboard">
                         <ul class="nav nav-collapse">
                             <li>
-                                <a href="{{ route('kategori.index') }}">
-                                    <span class="sub-item">Kategori</span>
+                                <a href="{{ route('tipe.index') }}">
+                                    <span class="sub-item">Tipe</span>
                                 </a>
                             </li>
                             <li>

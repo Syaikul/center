@@ -23,7 +23,7 @@ class PosisiApiController extends Controller
     public function ppe(posisi $posisi): JsonResponse
     {
         $items = $posisi->items()
-            ->with(['subBarang.barang.kategori', 'subBarang.barang.satuan'])
+            ->with(['subBarang.barang.tipe', 'subBarang.barang.satuan'])
             ->orderBy('idposppe')
             ->get();
 
