@@ -17,6 +17,10 @@ class personel extends Model
     protected $fillable = [
         'nik',
         'namapersonel',
+        'jabatan',
+        'alamat',
+        'nomorhp',
+        'email',
     ];
 
     public function getRouteKeyName(): string

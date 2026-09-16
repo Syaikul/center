@@ -21,8 +21,11 @@ class PosisiController extends Controller
 
         $subBarangs = barang_sub::query()
             ->with('barang')
-            ->orderBy('namasubbarang')
-            ->get();
+            ->get()
+            ->sortBy(fn ($sub) => [
+                strtolower($sub->barang?->namabarang ?? ''),
+                strtolower($sub->namasubbarang),
+            ]);
 
         $selectedPosisi = null;
         $items = collect();

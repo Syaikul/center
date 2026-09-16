@@ -9,13 +9,14 @@ use App\Http\Controllers\PosisiController;
 use App\Http\Controllers\SatuanController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
 Auth::routes();
 
 Route::middleware('auth')->group(function () {
+    Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::resource('tipe', TipeController::class)->only(['index', 'store', 'update', 'destroy']);
     Route::redirect('/kategori', '/tipe');

@@ -1,11 +1,26 @@
 @extends('layouts.app')
 
 @section('content')
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <style>
         .master-row { cursor: pointer; }
         .master-row:hover { background-color: rgba(0, 0, 0, 0.04) !important; }
         .master-row.table-active { --bs-table-bg-state: var(--bs-primary-bg-subtle); }
         .detail-panel { border-left: 4px solid var(--bs-primary); }
+        #modalItem .select2-container { width: 100% !important; }
+        #modalItem .select2-container .select2-selection--single {
+            height: 38px;
+            padding: 4px 8px;
+            border: 1px solid var(--bs-border-color, #d5d7da);
+        }
+        #modalItem .select2-container .select2-selection--single .select2-selection__rendered {
+            line-height: 28px;
+            padding-left: 0;
+        }
+        #modalItem .select2-container .select2-selection--single .select2-selection__arrow {
+            height: 36px;
+        }
+        .select2-container .select2-dropdown { z-index: 2000; }
     </style>
 
     <div class="d-flex align-items-center flex-wrap gap-2 pt-2 pb-3">
@@ -95,7 +110,6 @@
                                                     {{ $item->subBarang?->nama_tampilan }}
                                                     <small class="text-muted d-block">
                                                         <code>{{ $item->subBarang?->kode_lengkap }}</code>
-                                                        — {{ $item->subBarang?->barang?->namabarang }}
                                                     </small>
                                                 </td>
                                                 <td class="text-center">{{ $item->qty }}</td>
@@ -171,13 +185,18 @@
                             <div class="form-group">
                                 <label for="idsubbarang">Sub barang</label>
                                 <select class="form-select" id="idsubbarang" name="idsubbarang" required>
-                                    <option value="">- pilih sub barang -</option>
-                                    @foreach ($subBarangs as $sub)
-                                        <option value="{{ $sub->idsubbarang }}">
-                                            {{ $sub->nama_tampilan }} ({{ $sub->kode_lengkap }}) — {{ $sub->barang?->namabarang }}
-                                        </option>
+                                    <option value="">- ketik untuk mencari sub barang -</option>
+                                    @foreach ($subBarangs->groupBy(fn ($sub) => $sub->barang?->namabarang ?? '-') as $namaBarang => $subs)
+                                        <optgroup label="{{ $namaBarang }}">
+                                            @foreach ($subs as $sub)
+                                                <option value="{{ $sub->idsubbarang }}">
+                                                    {{ $sub->nama_tampilan }} ({{ $sub->kode_lengkap }})
+                                                </option>
+                                            @endforeach
+                                        </optgroup>
                                     @endforeach
                                 </select>
+                                <small class="text-muted">Ketik nama, kode, atau nama barang untuk memfilter.</small>
                             </div>
                             <div class="form-group">
                                 <label for="qty">Qty</label>
@@ -196,6 +215,7 @@
 @endsection
 
 @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
         (function() {
             document.querySelectorAll('.master-row[data-href]').forEach(function(row) {
@@ -233,11 +253,42 @@
                 const qty = document.getElementById('qty');
                 const itemTitle = document.getElementById('modalItemLabel');
                 const storeItemUrl = @json(route('posisi.item.store', $selectedPosisi));
+                const $subSelect = $(idsubbarang);
+
+                $subSelect.select2({
+                    dropdownParent: $('#modalItem'),
+                    width: '100%',
+                    placeholder: '- ketik untuk mencari sub barang -',
+                    allowClear: true,
+                    language: {
+                        noResults: function() { return 'Tidak ada hasil'; },
+                        searching: function() { return 'Mencari…'; }
+                    },
+                    matcher: function(params, data) {
+                        if ($.trim(params.term) === '') {
+                            return data;
+                        }
+                        var term = params.term.toLowerCase();
+                        if (data.children && data.children.length) {
+                            var match = $.extend(true, {}, data);
+                            match.children = data.children.filter(function(child) {
+                                return child.text.toLowerCase().indexOf(term) > -1
+                                    || (data.text || '').toLowerCase().indexOf(term) > -1;
+                            });
+                            return match.children.length ? match : null;
+                        }
+                        var text = (data.text || '').toLowerCase();
+                        var group = data.element && data.element.parentElement
+                            ? (data.element.parentElement.label || '').toLowerCase()
+                            : '';
+                        return (text.indexOf(term) > -1 || group.indexOf(term) > -1) ? data : null;
+                    }
+                });
 
                 document.getElementById('btnTambahItem').addEventListener('click', function() {
                     formItem.action = storeItemUrl;
                     itemMethod.innerHTML = '';
-                    idsubbarang.value = '';
+                    $subSelect.val(null).trigger('change');
                     qty.value = '';
                     itemTitle.textContent = 'Tambah item — {{ $selectedPosisi->namaposisi }}';
                 });
@@ -246,7 +297,7 @@
                     btn.addEventListener('click', function() {
                         formItem.action = @json(url('posisi/'.$selectedPosisi->idposisi.'/item')) + '/' + this.dataset.id;
                         itemMethod.innerHTML = '<input type="hidden" name="_method" value="PUT">';
-                        idsubbarang.value = this.dataset.idsubbarang;
+                        $subSelect.val(this.dataset.idsubbarang).trigger('change');
                         qty.value = this.dataset.qty;
                         itemTitle.textContent = 'Ubah item';
                     });

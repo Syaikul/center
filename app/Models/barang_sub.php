@@ -25,6 +25,7 @@ class barang_sub extends Model
     protected $appends = [
         'kode_lengkap',
         'nama_tampilan',
+        'nama_lengkap',
     ];
 
     public function getRouteKeyName(): string
@@ -104,5 +105,25 @@ class barang_sub extends Model
     public function getNamaTampilanAttribute(): string
     {
         return $this->defaultVarian()?->nama_tampilan ?? $this->namasubbarang;
+    }
+
+    /**
+     * Nama untuk dropdown/list: barang dulu, lalu sub.
+     * Contoh: Coverall + (Drill) => Coverall (Drill)
+     */
+    public function getNamaLengkapAttribute(): string
+    {
+        $barang = trim((string) ($this->barang?->namabarang ?? ''));
+        $sub = trim($this->nama_tampilan);
+
+        if ($sub === '' || $sub === '-') {
+            return $barang;
+        }
+
+        if ($barang === '' || stripos($sub, $barang) === 0) {
+            return $sub;
+        }
+
+        return $barang.' '.$sub;
     }
 }

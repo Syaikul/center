@@ -22,6 +22,10 @@ class PersonelController extends Controller
         $validated = $request->validate([
             'nik' => ['required', 'string', 'max:50', 'unique:personel,nik'],
             'namapersonel' => ['required', 'string', 'max:191', 'unique:personel,namapersonel'],
+            'jabatan' => ['nullable', 'string', 'max:191'],
+            'alamat' => ['nullable', 'string', 'max:1000'],
+            'nomorhp' => ['nullable', 'string', 'max:20'],
+            'email' => ['nullable', 'string', 'email', 'max:191'],
         ]);
 
         personel::query()->create($validated);
@@ -44,6 +48,10 @@ class PersonelController extends Controller
                 'max:191',
                 Rule::unique('personel', 'namapersonel')->ignore($personel->idpersonel, 'idpersonel'),
             ],
+            'jabatan' => ['nullable', 'string', 'max:191'],
+            'alamat' => ['nullable', 'string', 'max:1000'],
+            'nomorhp' => ['nullable', 'string', 'max:20'],
+            'email' => ['nullable', 'string', 'email', 'max:191'],
         ]);
 
         $personel->update($validated);
